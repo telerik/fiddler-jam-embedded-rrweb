@@ -11,7 +11,7 @@ import type { PackFn, UnpackFn } from './packer/base';
 import type { IframeManager } from './record/iframe-manager';
 import type { ShadowDomManager } from './record/shadow-dom-manager';
 import type { Replayer } from './replay';
-import type { RRNode } from 'rrdom/es/virtual-dom';
+import type { BaseRRNode } from 'vdom';
 import type { CanvasManager } from './record/observers/canvas/canvas-manager';
 
 export enum EventType {
@@ -670,7 +670,7 @@ export type playerMetaData = {
 };
 
 export type missingNode = {
-  node: Node | RRNode;
+  node: Node | BaseRRNode;
   mutation: addedNodeMutation;
 };
 export type missingNodeMap = {

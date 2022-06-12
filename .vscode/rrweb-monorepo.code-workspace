@@ -9,6 +9,10 @@
       "path": "../packages/rrdom"
     },
     {
+      "name": "vdom (package)",
+      "path": "../packages/vdom"
+    },
+    {
       "name": "rrweb (package)",
       "path": "../packages/rrweb"
     },

@@ -13,6 +13,7 @@ import type {
   inputData,
   scrollData,
 } from 'rrweb/src/types';
+import type { VirtualStyleRules } from './diff';
 import {
   BaseRRNode as RRNode,
   BaseRRCDATASectionImpl,
@@ -30,7 +31,6 @@ import {
   IRRText,
   IRRComment,
 } from './document';
-import type { VirtualStyleRules } from './diff';
 
 export class RRDocument extends BaseRRDocumentImpl(RRNode) {
   // In the rrweb replayer, there are some unserialized nodes like the element that stores the injected style rules.
@@ -226,7 +226,7 @@ export function buildFromNode(
       }
       break;
     case NodeType.DOCUMENT_TYPE_NODE:
-      const documentType = (node ) as DocumentType;
+      const documentType = node as DocumentType;
       rrNode = rrdom.createDocumentType(
         documentType.name,
         documentType.publicId,
@@ -234,7 +234,7 @@ export function buildFromNode(
       );
       break;
     case NodeType.ELEMENT_NODE:
-      const elementNode = (node ) as HTMLElement;
+      const elementNode = node as HTMLElement;
       const tagName = getValidTagName(elementNode);
       rrNode = rrdom.createElement(tagName);
       const rrElement = rrNode as IRRElement;
@@ -249,15 +249,13 @@ export function buildFromNode(
        */
       break;
     case NodeType.TEXT_NODE:
-      rrNode = rrdom.createTextNode(((node ) as Text).textContent || '');
+      rrNode = rrdom.createTextNode((node as Text).textContent || '');
       break;
     case NodeType.CDATA_SECTION_NODE:
-      rrNode = rrdom.createCDATASection(((node ) as CDATASection).data);
+      rrNode = rrdom.createCDATASection((node as CDATASection).data);
       break;
     case NodeType.COMMENT_NODE:
-      rrNode = rrdom.createComment(
-        ((node ) as Comment).textContent || '',
-      );
+      rrNode = rrdom.createComment((node as Comment).textContent || '');
       break;
     // if node is a shadow root
     case NodeType.DOCUMENT_FRAGMENT_NODE:
@@ -316,9 +314,9 @@ export function buildFromDom(
       // if the node is a shadow dom
       if (
         node.nodeType === NodeType.ELEMENT_NODE &&
-        ((node ) as HTMLElement).shadowRoot
+        (node as HTMLElement).shadowRoot
       )
-        walk(((node ) as HTMLElement).shadowRoot!, rrNode);
+        walk((node as HTMLElement).shadowRoot!, rrNode);
       node.childNodes.forEach((childNode) => walk(childNode, rrNode));
     }
   }
@@ -440,11 +438,11 @@ export function getDefaultSN(node: IRRNode, id: number): serializedNodeWithId {
   }
 }
 
-export { RRNode };
 export {
   diff,
   createOrGetNode,
   StyleRuleType,
-  VirtualStyleRules,
   ReplayerHandler,
+  VirtualStyleRules,
 } from './diff';
+export * from './document';

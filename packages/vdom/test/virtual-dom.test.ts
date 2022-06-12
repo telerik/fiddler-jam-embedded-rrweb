@@ -27,8 +27,8 @@ import {
   RRCanvasElement,
   RRDocument,
   RRElement,
-  RRNode,
-} from '../src/virtual-dom';
+  BaseRRNode as RRNode,
+} from '../src';
 
 const _typescript = (typescript as unknown) as typeof typescript.default;
 const printRRDomCode = `
@@ -42,11 +42,11 @@ function printRRDom(rootNode, mirror) {
 }
 function walk(node, mirror, blankSpace) {
   let printText = \`\${blankSpace}\${mirror.getId(node)} \${node.toString()}\n\`;
-  if(node instanceof rrdom.RRElement && node.shadowRoot)
+  if(node instanceof vdom.RRElement && node.shadowRoot)
     printText += walk(node.shadowRoot, mirror, blankSpace + '  ');
   for (const child of node.childNodes)
     printText += walk(child, mirror, blankSpace + '  ');
-  if (node instanceof rrdom.RRIFrameElement)
+  if (node instanceof vdom.RRIFrameElement)
     printText += walk(node.contentDocument, mirror, blankSpace + '  ');
   return printText;
 }
@@ -219,7 +219,7 @@ describe('RRDocument for browser environment', () => {
     beforeAll(async () => {
       browser = await puppeteer.launch();
       const bundle = await rollup.rollup({
-        input: path.resolve(__dirname, '../src/virtual-dom.ts'),
+        input: path.resolve(__dirname, '../src/index.ts'),
         plugins: [
           resolve(),
           (_typescript({
@@ -230,7 +230,7 @@ describe('RRDocument for browser environment', () => {
       const {
         output: [{ code: _code }],
       } = await bundle.generate({
-        name: 'rrdom',
+        name: 'vdom',
         format: 'iife',
       });
       code = _code;
@@ -251,8 +251,8 @@ describe('RRDocument for browser environment', () => {
     it('can build from a common html', async () => {
       await page.setContent(getHtml('main.html'));
       const result = await page.evaluate(`
-        const doc = new rrdom.RRDocument();
-        rrdom.buildFromDom(document, undefined, doc);
+        const doc = new vdom.RRDocument();
+        vdom.buildFromDom(document, undefined, doc);
         printRRDom(doc, doc.mirror);
       `);
       expect(result).toMatchSnapshot();
@@ -261,8 +261,8 @@ describe('RRDocument for browser environment', () => {
     it('can build from an iframe html ', async () => {
       await page.setContent(getHtml('iframe.html'));
       const result = await page.evaluate(`
-        const doc = new rrdom.RRDocument();
-        rrdom.buildFromDom(document, undefined, doc);
+        const doc = new vdom.RRDocument();
+        vdom.buildFromDom(document, undefined, doc);
         printRRDom(doc, doc.mirror);
       `);
       expect(result).toMatchSnapshot();
@@ -271,8 +271,8 @@ describe('RRDocument for browser environment', () => {
     it('can build from a html containing nested shadow doms', async () => {
       await page.setContent(getHtml('shadow-dom.html'));
       const result = await page.evaluate(`
-        const doc = new rrdom.RRDocument();
-        rrdom.buildFromDom(document, undefined, doc);
+        const doc = new vdom.RRDocument();
+        vdom.buildFromDom(document, undefined, doc);
         printRRDom(doc, doc.mirror);
       `);
       expect(result).toMatchSnapshot();
@@ -285,8 +285,8 @@ describe('RRDocument for browser environment', () => {
       docu.getElementsByTagName('xml')[0].appendChild(cdata);
       // Displays: <xml><![CDATA[Some <CDATA> data & then some]]></xml>
 
-      const doc = new rrdom.RRDocument();
-      rrdom.buildFromDom(docu, undefined, doc);
+      const doc = new vdom.RRDocument();
+      vdom.buildFromDom(docu, undefined, doc);
       printRRDom(doc, doc.mirror);
       `);
       expect(result).toMatchSnapshot();
