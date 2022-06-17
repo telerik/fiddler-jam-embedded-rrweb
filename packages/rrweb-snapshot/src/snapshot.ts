@@ -489,7 +489,8 @@ function serializeNode(
         tagName === 'textarea' ||
         tagName === 'select'
       ) {
-        const value = (n as HTMLInputElement | HTMLTextAreaElement).value;
+        const input = (n as HTMLInputElement | HTMLTextAreaElement);
+        const value = input.value;
         if (
           attributes.type !== 'radio' &&
           attributes.type !== 'checkbox' &&
@@ -503,6 +504,7 @@ function serializeNode(
             value,
             maskInputOptions,
             maskInputFn,
+            forceMasking: maskTextSelector ? input.matches(maskTextSelector) : false
           });
         } else if ((n as HTMLInputElement).checked) {
           attributes.checked = (n as HTMLInputElement).checked;

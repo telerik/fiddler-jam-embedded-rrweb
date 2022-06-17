@@ -1,6 +1,6 @@
 {
   "name": "rrweb",
-  "version": "1.1.3",
+  "version": "1.1.3-fiddler-jam-embedded",
   "description": "record and replay the web",
   "scripts": {
     "prepare": "npm run prepack",

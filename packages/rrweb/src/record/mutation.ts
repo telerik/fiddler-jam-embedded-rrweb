@@ -459,7 +459,7 @@ export default class MutationBuffer {
       }
       case 'attributes': {
         const target = m.target as HTMLElement;
-        let value = (m.target as HTMLElement).getAttribute(m.attributeName!);
+        let value = target.getAttribute(m.attributeName!);
         if (m.attributeName === 'value') {
           value = maskInputValue({
             maskInputOptions: this.maskInputOptions,
@@ -467,6 +467,7 @@ export default class MutationBuffer {
             type: (m.target as HTMLElement).getAttribute('type'),
             value,
             maskInputFn: this.maskInputFn,
+            forceMasking: this.maskTextSelector ? target.matches(this.maskTextSelector) : false
           });
         }
         if (isBlocked(m.target, this.blockClass) || value === m.oldValue) {

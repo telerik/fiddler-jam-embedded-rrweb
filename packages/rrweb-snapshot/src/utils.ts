@@ -15,17 +15,20 @@ export function maskInputValue({
   type,
   value,
   maskInputFn,
+  forceMasking
 }: {
   maskInputOptions: MaskInputOptions;
   tagName: string;
   type: string | number | boolean | null;
   value: string | null;
   maskInputFn?: MaskInputFn;
+  forceMasking: boolean;
 }): string {
   let text = value || '';
   if (
     maskInputOptions[tagName.toLowerCase() as keyof MaskInputOptions] ||
-    maskInputOptions[type as keyof MaskInputOptions]
+    maskInputOptions[type as keyof MaskInputOptions] ||
+    forceMasking
   ) {
     if (maskInputFn) {
       text = maskInputFn(text);

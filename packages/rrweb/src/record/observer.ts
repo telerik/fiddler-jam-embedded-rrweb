@@ -326,6 +326,7 @@ function initInputObserver({
   mirror,
   blockClass,
   ignoreClass,
+  maskTextSelector,
   maskInputOptions,
   maskInputFn,
   sampling,
@@ -356,18 +357,14 @@ function initInputObserver({
     let isChecked = false;
     if (type === 'radio' || type === 'checkbox') {
       isChecked = (target as HTMLInputElement).checked;
-    } else if (
-      maskInputOptions[
-        (target as Element).tagName.toLowerCase() as keyof MaskInputOptions
-      ] ||
-      maskInputOptions[type as keyof MaskInputOptions]
-    ) {
+    } else {
       text = maskInputValue({
         maskInputOptions,
         tagName: (target as HTMLElement).tagName,
         type,
         value: text,
         maskInputFn,
+        forceMasking: maskTextSelector ? (target as HTMLElement).matches(maskTextSelector) : false
       });
     }
     cbWithDedup(
